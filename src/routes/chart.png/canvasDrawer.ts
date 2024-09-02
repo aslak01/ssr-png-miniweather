@@ -2,39 +2,20 @@ import { createCanvas, Canvas, CanvasRenderingContext2D } from 'canvas';
 import * as d3 from 'd3';
 import { writeFile } from 'fs/promises';
 import { createWriteStream } from 'fs';
-
-type DataPoint = {
-  date: Date;
-  value: number;
-};
-
-type Dimensions = {
-  width: number;
-  height: number;
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-};
-
-type Style = {
-  lineColor: string;
-  lineWidth: number;
-  axisColor: string;
-  axisWidth: number;
-  labelColor: string;
-  labelFont: string;
-};
+import type { Data, DataPoint, Dimensions, Styles } from './data';
+import { isTruthy } from '$lib/utils';
 
 const createScales = (data: DataPoint[], dimensions: Dimensions) => {
+  const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
+  const max = d3.max(data, (d) => d.value) || 0;
   const xScale = d3
     .scaleTime()
-    .domain(d3.extent(data, (d) => d.date) as [Date, Date])
+    .domain(extent)
     .range([dimensions.left, dimensions.width - dimensions.right]);
 
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value) as number])
+    .domain([0, max])
     .range([dimensions.height - dimensions.bottom, dimensions.top]);
 
   return { xScale, yScale };
@@ -54,7 +35,7 @@ const drawLine = (
   context: CanvasRenderingContext2D,
   lineGenerator: d3.Line<DataPoint>,
   data: DataPoint[],
-  style: Style
+  style: Styles
 ) => {
   context.beginPath();
   lineGenerator.context(context)(data);
@@ -63,7 +44,7 @@ const drawLine = (
   context.stroke();
 };
 
-const drawAxes = (context: CanvasRenderingContext2D, dimensions: Dimensions, style: Style) => {
+const drawAxes = (context: CanvasRenderingContext2D, dimensions: Dimensions, style: Styles) => {
   context.beginPath();
   context.moveTo(dimensions.left, dimensions.top);
   context.lineTo(dimensions.left, dimensions.height - dimensions.bottom);
@@ -73,7 +54,7 @@ const drawAxes = (context: CanvasRenderingContext2D, dimensions: Dimensions, sty
   context.stroke();
 };
 
-const addLabels = (context: CanvasRenderingContext2D, dimensions: Dimensions, style: Style) => {
+const addLabels = (context: CanvasRenderingContext2D, dimensions: Dimensions, style: Styles) => {
   context.font = style.labelFont;
   context.fillStyle = style.labelColor;
   context.fillText('Date', dimensions.width / 2, dimensions.height - 5);
@@ -84,7 +65,7 @@ const addLabels = (context: CanvasRenderingContext2D, dimensions: Dimensions, st
   context.restore();
 };
 
-const createChart = (data: DataPoint[], dimensions: Dimensions, style: Style): Canvas => {
+const createChart = (data: DataPoint[], dimensions: Dimensions, style: Styles): Canvas => {
   const canvas = createCanvas(dimensions.width, dimensions.height);
   const context = canvas.getContext('2d');
 
@@ -98,7 +79,7 @@ const createChart = (data: DataPoint[], dimensions: Dimensions, style: Style): C
   return canvas;
 };
 
-const createChartBuffer = (data: DataPoint[], dimensions: Dimensions, style: Style): Buffer => {
+const createChartBuffer = (data: DataPoint[], dimensions: Dimensions, style: Styles): Buffer => {
   const chart = createChart(data, dimensions, style);
   return chart.toBuffer('image/png');
 };
@@ -115,7 +96,7 @@ const saveBufferToPng = async (buffer: Buffer, filePath: string): Promise<void> 
 const createAndSaveChart = (
   data: DataPoint[],
   dimensions: Dimensions,
-  style: Style,
+  style: Styles,
   outputPath: string
 ) => {
   const chart = createChart(data, dimensions, style);
@@ -128,4 +109,4 @@ const createAndSaveChart = (
   });
 };
 
-export { createChartBuffer, saveBufferToPng, type DataPoint, type Dimensions, type Style };
+export { createChartBuffer, saveBufferToPng };

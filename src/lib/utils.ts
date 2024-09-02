@@ -9,3 +9,7 @@ export function formatDateString(dt: string | undefined): string {
   });
   return formatter.format(date);
 }
+
+export function isTruthy<T>(value: T | undefined | null | false | '' | 0): value is T {
+  return !!value;
+}
