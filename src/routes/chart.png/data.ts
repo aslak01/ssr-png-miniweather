@@ -1,4 +1,4 @@
-const dimensions = {
+export const dimensions = {
   width: 480,
   height: 220,
   top: 20,
@@ -7,18 +7,23 @@ const dimensions = {
   left: 40
 };
 
-type Dimensions = typeof dimensions;
+export type Dimensions = typeof dimensions;
 
-const style = {
+// barColor: string;
+// barWidth: number;
+
+export const style = {
   lineColor: '#007bff',
   lineWidth: 2,
   axisColor: '#000000',
   axisWidth: 1,
   labelColor: '#333333',
-  labelFont: '12px Arial'
+  labelFont: '12px Arial',
+  barColor: 'rgba(70, 130, 180, 0.5)',
+  barWidth: 8
 };
 
-type Styles = typeof style;
+export type Styles = typeof style;
 
 const data = [
   { date: new Date('2023-01-01'), value: 10 },
@@ -27,11 +32,6 @@ const data = [
   { date: new Date('2023-04-01'), value: 18 },
   { date: new Date('2023-05-01'), value: 25 }
 ];
-
-type Data = typeof data;
-type DataPoint = (typeof data)[number];
-
-export { data, dimensions, style, type Data, type DataPoint, type Dimensions, type Styles };
 
 export type YrWeather = {
   time: string;
@@ -91,31 +91,26 @@ function getNextNHrs(data: YrWeather[], n = 10) {
 }
 
 import type { TWeatherSymbolKey } from './weathericontypes';
+import type { DataPoint } from './types';
 
-export type DataAndTime = {
-  value: number;
-  date: string;
-  icon?: TWeatherSymbolKey;
-};
-
-function getTemps(w: YrWeather[]): DataAndTime[] {
+function getTemps(w: YrWeather[]): DataPoint[] {
   return w.map((t: YrWeather) => ({
     value: t.data.instant.details.air_temperature,
     icon: t.data.next_1_hours.summary.symbol_code as TWeatherSymbolKey,
-    date: t.time
+    date: new Date(t.time)
   }));
 }
 
-function getRain(w: YrWeather[]): DataAndTime[] {
+function getRain(w: YrWeather[]): DataPoint[] {
   return w.map((t: YrWeather) => ({
     value: t.data.next_1_hours.details.precipitation_amount,
-    date: t.time
+    date: new Date(t.time)
   }));
 }
 
 type TempAndRainTS = {
-  temps: DataAndTime[];
-  rain: DataAndTime[];
+  temps: DataPoint[];
+  rain: DataPoint[];
 };
 
 export async function yrTimeseries(lat = '59', lon = '11', hrs = 8) {
@@ -126,3 +121,8 @@ export async function yrTimeseries(lat = '59', lon = '11', hrs = 8) {
     rain: getRain(trimmedResponse)
   };
 }
+
+export type YrData = {
+  temps: DataPoint[];
+  rain: DataPoint[];
+};

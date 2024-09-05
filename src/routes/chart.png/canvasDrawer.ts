@@ -2,8 +2,11 @@ import { createCanvas, Canvas, CanvasRenderingContext2D } from 'canvas';
 import * as d3 from 'd3';
 import { writeFile } from 'fs/promises';
 import { createWriteStream } from 'fs';
-import type { Data, DataPoint, Dimensions, Styles } from './data';
+import type { Dimensions, Styles, YrData } from './data';
+import type { DataPoint } from './types';
 import { isTruthy } from '$lib/utils';
+import { createLineGenerator, drawLine } from './drawLine';
+import { addBarsToChart } from './drawBars';
 
 const createScales = (data: DataPoint[], dimensions: Dimensions) => {
   const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
@@ -19,29 +22,6 @@ const createScales = (data: DataPoint[], dimensions: Dimensions) => {
     .range([dimensions.height - dimensions.bottom, dimensions.top]);
 
   return { xScale, yScale };
-};
-
-const createLineGenerator = (
-  xScale: d3.ScaleTime<number, number>,
-  yScale: d3.ScaleLinear<number, number>
-) => {
-  return d3
-    .line<DataPoint>()
-    .x((d) => xScale(d.date))
-    .y((d) => yScale(d.value));
-};
-
-const drawLine = (
-  context: CanvasRenderingContext2D,
-  lineGenerator: d3.Line<DataPoint>,
-  data: DataPoint[],
-  style: Styles
-) => {
-  context.beginPath();
-  lineGenerator.context(context)(data);
-  context.lineWidth = style.lineWidth;
-  context.strokeStyle = style.lineColor;
-  context.stroke();
 };
 
 const drawAxes = (context: CanvasRenderingContext2D, dimensions: Dimensions, style: Styles) => {
@@ -65,19 +45,40 @@ const addLabels = (context: CanvasRenderingContext2D, dimensions: Dimensions, st
   context.restore();
 };
 
-const createChart = (data: DataPoint[], dimensions: Dimensions, style: Styles): Canvas => {
+const createChart = (data: YrData, dimensions: Dimensions, style: Styles): Canvas => {
   const canvas = createCanvas(dimensions.width, dimensions.height);
   const context = canvas.getContext('2d');
 
+  const { temps, rain } = data;
+  console.log(temps, rain);
+
+  drawTemps(temps, context, dimensions, style);
+  drawRain(rain, context, dimensions, style);
+
+  return canvas;
+};
+
+function drawRain(
+  data: DataPoint[],
+  context: CanvasRenderingContext2D,
+  dimensions: Dimensions,
+  style: Styles
+) {
+  addBarsToChart(context, data, dimensions, style);
+}
+function drawTemps(
+  data: DataPoint[],
+  context: CanvasRenderingContext2D,
+  dimensions: Dimensions,
+  style: Styles
+) {
   const { xScale, yScale } = createScales(data, dimensions);
   const lineGenerator = createLineGenerator(xScale, yScale);
 
   drawLine(context, lineGenerator, data, style);
   drawAxes(context, dimensions, style);
   addLabels(context, dimensions, style);
-
-  return canvas;
-};
+}
 
 const createChartBuffer = (data: DataPoint[], dimensions: Dimensions, style: Styles): Buffer => {
   const chart = createChart(data, dimensions, style);
