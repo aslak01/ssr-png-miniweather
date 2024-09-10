@@ -72,7 +72,7 @@ export const mockRawData = [
 			},
 			next_1_hours: {
 				summary: { symbol_code: 'cloudy' },
-				details: { precipitation_amount: 0 }
+				details: { precipitation_amount: 1.2 }
 			},
 			next_6_hours: {
 				summary: { symbol_code: 'lightrainshowers_night' },
@@ -207,7 +207,7 @@ export const mockRawData = [
 			},
 			next_1_hours: {
 				summary: { symbol_code: 'partlycloudy_night' },
-				details: { precipitation_amount: 0 }
+				details: { precipitation_amount: 2 }
 			},
 			next_6_hours: {
 				summary: { symbol_code: 'lightrainshowers_day' },
@@ -234,7 +234,7 @@ export const mockRawData = [
 			},
 			next_1_hours: {
 				summary: { symbol_code: 'partlycloudy_night' },
-				details: { precipitation_amount: 0 }
+				details: { precipitation_amount: 3.3 }
 			},
 			next_6_hours: {
 				summary: { symbol_code: 'lightrainshowers_day' },

@@ -26,7 +26,9 @@ export const style = {
 	strongLineColor: '#000',
 	weakLineColor: '#777',
 	strongLineWidth: 1,
-	weakLineWidth: 0.5
+	weakLineWidth: 0.5,
+	circleColor: 'white',
+	textColor: 'black'
 };
 
 export type Styles = typeof style;

@@ -1,4 +1,4 @@
-import { createCanvas, Canvas, type CanvasRenderingContext2D } from 'canvas';
+import { createCanvas, Canvas } from 'canvas';
 import * as d3 from 'd3';
 import { writeFile } from 'fs/promises';
 import { createWriteStream } from 'fs';
