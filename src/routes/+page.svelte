@@ -1,12 +1,18 @@
 <script lang="ts">
-	import { drawTheCanvas } from '$lib/canvas';
-	import { onMount } from 'svelte';
-
-	let canvas: HTMLCanvasElement | null = null;
-
-	onMount(() => {
-		canvas && drawTheCanvas(canvas);
-	});
+	import { dimensions } from './chart.png/data';
+	const { height, width } = dimensions;
 </script>
 
-<canvas bind:this={canvas}></canvas>
+<main>
+	<img src="/chart.png" {height} {width} alt="chart" />
+</main>
+
+<style>
+	main {
+		padding: 0;
+		min-height: 100dvh;
+		display: grid;
+		justify-content: center;
+		align-items: center;
+	}
+</style>
