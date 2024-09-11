@@ -11,46 +11,6 @@ function getXScale(data: YrTSData[], dimensions: Dimensions) {
 		.range([dimensions.left, dimensions.width - dimensions.right]);
 }
 
-export const drawTimeMarkerLines = (
-	context: CanvasRenderingContext2D,
-	data: YrTSData[],
-	dimensions: Dimensions,
-	style: Styles
-) => {
-	const xScale = getXScale(data, dimensions);
-	const drawLine = (date: Date, isStrong: boolean) => {
-		const lineX = xScale(date);
-		context.beginPath();
-		context.moveTo(lineX, dimensions.top);
-		context.lineTo(lineX, dimensions.height - dimensions.bottom);
-		context.strokeStyle = isStrong
-			? style.strongLineColor
-			: style.weakLineColor;
-		context.lineWidth = isStrong ? style.strongLineWidth : style.weakLineWidth;
-		context.stroke();
-	};
-
-	const startDate = data[0].date;
-	const endDate = data[data.length - 1].date;
-
-	// Generate time markers for the entire day containing the data
-	const dayStart = new Date(startDate);
-	dayStart.setHours(0, 0, 0, 0);
-	const markers = [0, 6, 12, 18].map((hour) => {
-		const date = new Date(dayStart);
-		date.setHours(hour);
-		return date;
-	});
-
-	// Draw markers that fall within the data range
-	markers.forEach((date) => {
-		if (date >= startDate && date <= endDate) {
-			const hour = date.getHours();
-			drawLine(date, hour === 0 || hour === 12);
-		}
-	});
-};
-
 export const drawTimeTicks = (
 	context: CanvasRenderingContext2D,
 	data: YrTSData[],
@@ -68,15 +28,38 @@ export const drawTimeTicks = (
 	context.textAlign = 'center';
 	context.textBaseline = 'top';
 
+	const longTickTimes = [0, 6, 12, 18];
+
 	xTicks.forEach((tick) => {
+		const hr = tick.getHours();
+		if (longTickTimes.includes(hr)) {
+			drawLongTick(tick);
+			return;
+		}
+		drawNormalTick(tick);
+	});
+
+	function drawNormalTick(tick: Date) {
 		const x = xScale(tick);
 		context.moveTo(x, dimensions.height - dimensions.bottom);
 		context.lineTo(x, dimensions.height - dimensions.bottom + style.tickLength);
 		context.stroke();
 		context.fillText(
-			String(formatDateLegend(tick)),
+			formatDateLegend(tick),
 			x,
 			dimensions.height - dimensions.bottom + style.tickLength + 2
 		);
-	});
+	}
+
+	function drawLongTick(tick: Date) {
+		const x = xScale(tick);
+		context.moveTo(x, dimensions.top - dimensions.bottom);
+		context.lineTo(x, dimensions.height - dimensions.bottom + style.tickLength);
+		context.stroke();
+		context.fillText(
+			formatDateLegend(tick),
+			x,
+			dimensions.height - dimensions.bottom + style.tickLength + 2
+		);
+	}
 };

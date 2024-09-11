@@ -1,14 +1,11 @@
-import { createChartBuffer, saveBufferToPng } from './canvasDrawer';
-import { writeFile } from 'fs/promises';
-import { createWriteStream } from 'fs';
+import { createChartBuffer } from './canvasDrawer';
 import type { RequestHandler } from '@sveltejs/kit';
-import { Canvas } from 'canvas';
-import { dimensions, style, yrTimeseries } from './data';
-import type { YrTSData } from './data';
+import { dimensions, style, getYrTimeseries } from './data';
+import { getTransports } from './data/transit';
 
-export const GET: RequestHandler = async ({ url, fetch }) => {
+export const GET: RequestHandler = async ({ url }) => {
 	const mock = !!url.searchParams.get('mock');
-	const tsData = await yrTimeseries(mock);
+	const tsData = await getYrTimeseries(mock);
 	const drawing = createChartBuffer(tsData, dimensions, style);
 	if (!drawing) {
 		throw new Error('no canvas');

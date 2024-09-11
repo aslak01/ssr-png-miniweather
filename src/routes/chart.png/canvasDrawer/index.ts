@@ -7,7 +7,7 @@ import { dev } from '$app/environment';
 import type { Dimensions, Styles, YrTSData } from '../data';
 import { drawRain } from './drawRain';
 import { drawTemps } from './drawTemps';
-import { drawTimeMarkerLines, drawTimeTicks } from './drawTime';
+import { drawTimeTicks } from './drawTime';
 import { multiplyNumberValues } from '$lib/utils';
 
 const createChart = (
@@ -15,17 +15,16 @@ const createChart = (
 	dimensions: Dimensions,
 	style: Styles
 ): Canvas => {
-	const ratio = dev ? 2 : 1;
+	const ratio = dev ? 1 : 1;
 	const dims = multiplyNumberValues(dimensions, ratio);
 	const styles = multiplyNumberValues(style, ratio);
 
 	const canvas = createCanvas(dims.width, dims.height);
 	const context = canvas.getContext('2d');
 
-	drawTimeMarkerLines(context, data, dims, styles);
 	drawTimeTicks(context, data, dims, styles);
-	drawTemps(context, data, dims, styles);
 	drawRain(context, data, dims, styles);
+	drawTemps(context, data, dims, styles);
 
 	return canvas;
 };

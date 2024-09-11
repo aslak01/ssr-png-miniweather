@@ -108,7 +108,7 @@ const drawCircleWithText = (
 	context.stroke();
 
 	context.fillStyle = style.textColor || 'black';
-	context.font = '12px Arial';
+	context.font = '20pt';
 	context.textAlign = 'center';
 	context.textBaseline = 'middle';
 	context.fillText(text, x, y);

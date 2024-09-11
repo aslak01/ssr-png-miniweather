@@ -1,6 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { dimensions } from './chart.png/data';
+	import { getTransports } from './chart.png/data/transit';
 	const { height, width } = dimensions;
+	onMount(async () => {
+		const test = await getTransports();
+	});
 </script>
 
 <main>

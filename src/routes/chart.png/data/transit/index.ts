@@ -1,0 +1,103 @@
+import {
+  Convert,
+  type EstimatedCall,
+  type RawEnturData
+} from './enturQuicktype';
+
+const enturQuery = `{
+stopPlaces(ids: ["NSR:StopPlace:60737", "NSR:StopPlace:3272"]) {
+    name
+    id
+    estimatedCalls {
+      destinationDisplay {
+        frontText
+      }
+      aimedDepartureTime
+      expectedDepartureTime
+    }
+  }
+}`;
+
+async function fetchEnturGql(query: string): Promise<string> {
+  try {
+    const requestOptions = {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'ET-Client-Name': 'personlig-infoskjerm'
+      }),
+      body: JSON.stringify({ query })
+    };
+    const res = await fetch(
+      'https://api.entur.io/journey-planner/v3/graphql',
+      requestOptions
+    );
+    if (!res.ok) {
+      throw new Error(`entur broke: ${res.statusText}`);
+    }
+    return await res.text();
+  } catch (error) {
+    throw new Error(`entur broke: ${JSON.stringify(error)}`);
+  }
+}
+function validateEnturResponse(data: string): RawEnturData {
+  try {
+    const rawEnturData = Convert.toRawEnturData(data);
+    return rawEnturData;
+  } catch (error) {
+    throw new Error(`entur data validation error: ${JSON.stringify(error)}`);
+  }
+}
+
+export async function getTransports(): Promise<void> {
+  const rawData = await fetchEnturGql(enturQuery);
+  const validatedData = validateEnturResponse(rawData);
+  const parsedData = parseEnturResponse(validatedData);
+}
+
+function parseEnturResponse(input: RawEnturData) {
+  const stations = input.data.stopPlaces;
+  const trainSt = stations.find((s) => s.name === 'Bondivann stasjon');
+  const busSt = stations.find((s) => s.name === 'Rønningen skole');
+  if (!trainSt || !busSt) return;
+  const trainDepartures = trainSt.estimatedCalls
+    .filter((d) => d.destinationDisplay.frontText === 'Lillestrøm')
+    .map((d) => parseDeparture(d, 'train'));
+  const busDepartures = busSt.estimatedCalls
+    .filter((d) => d.destinationDisplay.frontText === 'Asker')
+    .map((d) => parseDeparture(d, 'bus'));
+  console.log(trainDepartures);
+  console.log(busDepartures);
+}
+
+type DepartureType = 'bus' | 'train';
+
+type ParsedDeparture = {
+  type: DepartureType;
+  departureTime: Date;
+  departureMinutes: number;
+  delayMinutes?: number;
+};
+
+function parseDeparture(
+  departure: EstimatedCall,
+  type: DepartureType
+): ParsedDeparture {
+  const aimedDepDt = new Date(departure.aimedDepartureTime);
+  const expectedDepDt = new Date(departure.expectedDepartureTime);
+  const delta = expectedDepDt.getTime() - aimedDepDt.getTime();
+  const departureMinutes = expectedDepDt.getMinutes();
+
+  const result: ParsedDeparture = {
+    type,
+    departureTime: expectedDepDt,
+    departureMinutes
+  };
+
+  // one minute = 60000 milliseconds
+  if (delta > 60000) {
+    result.delayMinutes = Math.floor(delta / 60000);
+  }
+
+  return result;
+}

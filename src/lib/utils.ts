@@ -10,8 +10,9 @@ export function formatDateString(dt: string | undefined): string {
 	return formatter.format(date);
 }
 
-export function formatDateLegend(dt: Date): number {
-	return dt.getHours();
+export function formatDateLegend(dt: Date): string {
+	const hr = dt.getHours().toString();
+	return hr.length > 1 ? hr : '0' + hr;
 }
 
 export function isTruthy<T>(
