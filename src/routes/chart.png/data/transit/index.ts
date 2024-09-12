@@ -49,10 +49,11 @@ function validateEnturResponse(data: string): RawEnturData {
   }
 }
 
-export async function getTransports(): Promise<void> {
+export async function getTransports(): Promise<ParsedDeparture[] | undefined> {
   const rawData = await fetchEnturGql(enturQuery);
   const validatedData = validateEnturResponse(rawData);
   const parsedData = parseEnturResponse(validatedData);
+  return parsedData;
 }
 
 function parseEnturResponse(input: RawEnturData) {
@@ -66,8 +67,12 @@ function parseEnturResponse(input: RawEnturData) {
   const busDepartures = busSt.estimatedCalls
     .filter((d) => d.destinationDisplay.frontText === 'Asker')
     .map((d) => parseDeparture(d, 'bus'));
-  console.log(trainDepartures);
-  console.log(busDepartures);
+  const sortedParsedDepartures = [
+    ...trainDepartures,
+    ...busDepartures
+  ].toSorted((a, b) => a.departureTime.getTime() - b.departureTime.getTime());
+
+  return sortedParsedDepartures;
 }
 
 type DepartureType = 'bus' | 'train';

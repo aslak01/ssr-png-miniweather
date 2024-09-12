@@ -5,6 +5,7 @@
 	const { height, width } = dimensions;
 	onMount(async () => {
 		const test = await getTransports();
+		console.log(test);
 	});
 </script>
 
