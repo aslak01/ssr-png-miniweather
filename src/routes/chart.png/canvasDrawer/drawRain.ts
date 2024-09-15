@@ -1,7 +1,5 @@
 import { type CanvasRenderingContext2D } from 'canvas';
-import { isTruthy } from '$lib/utils';
-import type { YrTSData } from '../data';
-import type { DataPoint, Dimensions, Styles } from '../types';
+import type { YrTSData, Dimensions, Styles, DataPoint } from '../data';
 import * as d3 from 'd3';
 
 export function drawRain(

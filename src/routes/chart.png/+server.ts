@@ -6,7 +6,16 @@ import { getTransports } from './data/transit';
 export const GET: RequestHandler = async ({ url }) => {
 	const mock = !!url.searchParams.get('mock');
 	const tsData = await getYrTimeseries(mock);
-	const drawing = createChartBuffer(tsData, dimensions, style);
+	const transitData = await getTransports();
+	if (!transitData) {
+		throw new Error('no canvas');
+	}
+	const drawing = await createChartBuffer(
+		tsData,
+		transitData,
+		dimensions,
+		style
+	);
 	if (!drawing) {
 		throw new Error('no canvas');
 	}

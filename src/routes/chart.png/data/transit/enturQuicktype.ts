@@ -10,27 +10,40 @@
 // match the expected interface, even if the JSON is valid.
 
 export type RawEnturData = {
-  readonly data: Data;
+  data: Data;
 };
 
 export type Data = {
-  readonly stopPlaces: StopPlace[];
+  stopPlaces: StopPlace[];
 };
 
 export type StopPlace = {
-  readonly name: string;
-  readonly id: string;
-  readonly estimatedCalls: EstimatedCall[];
+  name: string;
+  id: string;
+  estimatedCalls: EstimatedCall[];
 };
 
 export type EstimatedCall = {
-  readonly destinationDisplay: DestinationDisplay;
-  readonly aimedDepartureTime: Date;
-  readonly expectedDepartureTime: Date;
+  aimedDepartureTime: Date;
+  expectedDepartureTime: Date;
+  datedServiceJourney: DatedServiceJourney;
+  destinationDisplay: DestinationDisplay;
+};
+
+export type DatedServiceJourney = {
+  journeyPattern: JourneyPattern;
+};
+
+export type JourneyPattern = {
+  line: Line;
+};
+
+export type Line = {
+  publicCode: string;
 };
 
 export type DestinationDisplay = {
-  readonly frontText: string;
+  frontText: string;
 };
 
 // Converts JSON strings to/from your types
@@ -245,16 +258,29 @@ const typeMap: any = {
   ),
   EstimatedCall: o(
     [
+      { json: 'aimedDepartureTime', js: 'aimedDepartureTime', typ: Date },
+      { json: 'expectedDepartureTime', js: 'expectedDepartureTime', typ: Date },
+      {
+        json: 'datedServiceJourney',
+        js: 'datedServiceJourney',
+        typ: r('DatedServiceJourney')
+      },
       {
         json: 'destinationDisplay',
         js: 'destinationDisplay',
         typ: r('DestinationDisplay')
-      },
-      { json: 'aimedDepartureTime', js: 'aimedDepartureTime', typ: Date },
-      { json: 'expectedDepartureTime', js: 'expectedDepartureTime', typ: Date }
+      }
     ],
     false
   ),
+  DatedServiceJourney: o(
+    [
+      { json: 'journeyPattern', js: 'journeyPattern', typ: r('JourneyPattern') }
+    ],
+    false
+  ),
+  JourneyPattern: o([{ json: 'line', js: 'line', typ: r('Line') }], false),
+  Line: o([{ json: 'publicCode', js: 'publicCode', typ: '' }], false),
   DestinationDisplay: o(
     [{ json: 'frontText', js: 'frontText', typ: '' }],
     false

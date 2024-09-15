@@ -33,5 +33,7 @@ export const style = {
 
 export type Styles = typeof style;
 
-import { getYrTimeseries } from './weather';
-export { getYrTimeseries };
+export type DataPoint = { value: number } & YrTSData;
+
+import { getYrTimeseries, type YrTSData } from './weather';
+export { getYrTimeseries, type YrTSData };

@@ -1,5 +1,5 @@
 import { type CanvasRenderingContext2D } from 'canvas';
-import { formatDateLegend, formatDateString, isTruthy } from '$lib/utils';
+import { formatDateLegend, isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData } from '../data';
 import * as d3 from 'd3';
 

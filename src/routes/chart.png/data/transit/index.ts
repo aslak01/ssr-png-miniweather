@@ -12,6 +12,13 @@ stopPlaces(ids: ["NSR:StopPlace:60737", "NSR:StopPlace:3272"]) {
       destinationDisplay {
         frontText
       }
+      datedServiceJourney {
+        journeyPattern {
+          line {
+            publicCode
+          }
+        }
+      }
       aimedDepartureTime
       expectedDepartureTime
     }
@@ -40,6 +47,7 @@ async function fetchEnturGql(query: string): Promise<string> {
     throw new Error(`entur broke: ${JSON.stringify(error)}`);
   }
 }
+
 function validateEnturResponse(data: string): RawEnturData {
   try {
     const rawEnturData = Convert.toRawEnturData(data);
@@ -77,8 +85,9 @@ function parseEnturResponse(input: RawEnturData) {
 
 type DepartureType = 'bus' | 'train';
 
-type ParsedDeparture = {
+export type ParsedDeparture = {
   type: DepartureType;
+  name: string;
   departureTime: Date;
   departureMinutes: number;
   delayMinutes?: number;
@@ -95,6 +104,7 @@ function parseDeparture(
 
   const result: ParsedDeparture = {
     type,
+    name: departure.datedServiceJourney.journeyPattern.line.publicCode,
     departureTime: expectedDepDt,
     departureMinutes
   };
