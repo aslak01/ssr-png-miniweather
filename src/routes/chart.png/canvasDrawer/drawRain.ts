@@ -13,18 +13,25 @@ export function drawRain(
 }
 
 const createBarScales = (data: DataPoint[], dimensions: Dimensions) => {
+	const { left, right, bottom, top, width, weatherHeight } = dimensions;
+	const height = weatherHeight;
+
 	const extent = d3
 		.extent(data, (d) => d.date)
 		.filter((d): d is Date => d !== undefined);
+
 	const max = d3.max(data, (d) => d.value) || 0;
+
 	const xScale = d3
 		.scaleTime()
 		.domain(extent)
-		.range([dimensions.left, dimensions.width - dimensions.right]);
+		.range([left, width - right]);
+
 	const yScale = d3
 		.scaleLinear()
 		.domain([0, max])
-		.range([dimensions.height - dimensions.bottom, dimensions.top]);
+		.range([height - bottom, top]);
+
 	return { xScale, yScale };
 };
 
@@ -36,12 +43,11 @@ const drawBars = (
 	dimensions: Dimensions,
 	style: Styles
 ) => {
+	const { left, right, bottom, top, width, weatherHeight } = dimensions;
+	const height = weatherHeight;
+
 	const barWidth =
-		style.barWidth ||
-		Math.max(
-			1,
-			(dimensions.width - dimensions.left - dimensions.right) / data.length - 1
-		);
+		style.barWidth || Math.max(1, (width - left - right) / data.length - 1);
 
 	context.fillStyle = style.barColor;
 	data
@@ -49,12 +55,7 @@ const drawBars = (
 		.forEach((d) => {
 			const x = xScale(d.date);
 			const y = yScale(d.value);
-			context.fillRect(
-				x - barWidth / 2,
-				y,
-				barWidth,
-				dimensions.height - dimensions.bottom - y
-			);
+			context.fillRect(x - barWidth / 2, y, barWidth, height - bottom - y);
 		});
 };
 
@@ -93,9 +94,11 @@ const addBarsToChart = (
 	dimensions: Dimensions,
 	style: Styles
 ) => {
-	const { xScale, yScale } = createBarScales(data, dimensions);
-	drawBars(context, data, xScale, yScale, dimensions, style);
-	drawAxisTicks(context, yScale, dimensions, style);
+	if (data.some((d) => d.value > 0)) {
+		const { xScale, yScale } = createBarScales(data, dimensions);
+		drawBars(context, data, xScale, yScale, dimensions, style);
+		drawAxisTicks(context, yScale, dimensions, style);
+	}
 };
 
 export { addBarsToChart };

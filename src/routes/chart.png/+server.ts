@@ -5,21 +5,28 @@ import { getTransports } from './data/transit';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const mock = !!url.searchParams.get('mock');
-	const tsData = await getYrTimeseries(mock);
+	const weatherData = await getYrTimeseries(mock);
 	const transitData = await getTransports();
-	if (!transitData) {
-		throw new Error('no canvas');
+
+	if (!weatherData) {
+		throw new Error('no weather data');
 	}
+
+	if (!transitData) {
+		throw new Error('no transit data');
+	}
+
 	const drawing = await createChartBuffer(
-		tsData,
+		weatherData,
 		transitData,
 		dimensions,
 		style
 	);
+
 	if (!drawing) {
-		throw new Error('no canvas');
+		throw new Error('no canvas drawing');
 	}
-	console.log(drawing);
+
 	return new Response(drawing, {
 		headers: {
 			'Content-Type': 'image/png',

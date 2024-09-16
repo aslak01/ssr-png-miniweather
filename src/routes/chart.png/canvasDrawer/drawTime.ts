@@ -1,4 +1,4 @@
-import { type CanvasRenderingContext2D } from 'canvas';
+import type { CanvasRenderingContext2D } from 'canvas';
 import { formatDateLegend, isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData } from '../data';
 import * as d3 from 'd3';
@@ -33,33 +33,43 @@ export const drawTimeTicks = (
 	xTicks.forEach((tick) => {
 		const hr = tick.getHours();
 		if (longTickTimes.includes(hr)) {
-			drawLongTick(tick);
+			drawLongTick(tick, dimensions, style);
 			return;
 		}
-		drawNormalTick(tick);
+		drawNormalTick(tick, dimensions, style);
 	});
 
-	function drawNormalTick(tick: Date) {
+	function drawNormalTick(tick: Date, dimensions: Dimensions, style: Styles) {
+		const { weatherHeight, bottom } = dimensions;
+		const height = weatherHeight;
+		const { tickLength } = style;
+
 		const x = xScale(tick);
-		context.moveTo(x, dimensions.height - dimensions.bottom);
-		context.lineTo(x, dimensions.height - dimensions.bottom + style.tickLength);
+
+		context.moveTo(x, height - bottom);
+		context.lineTo(x, height - bottom + tickLength);
 		context.stroke();
 		context.fillText(
 			formatDateLegend(tick),
 			x,
-			dimensions.height - dimensions.bottom + style.tickLength + 2
+			height - bottom + tickLength + 2
 		);
 	}
 
-	function drawLongTick(tick: Date) {
+	function drawLongTick(tick: Date, dimensions: Dimensions, style: Styles) {
+		const { weatherHeight, bottom, top } = dimensions;
+		const height = weatherHeight;
+		const { tickLength } = style;
+
 		const x = xScale(tick);
-		context.moveTo(x, dimensions.top - dimensions.bottom);
-		context.lineTo(x, dimensions.height - dimensions.bottom + style.tickLength);
+
+		context.moveTo(x, top - bottom);
+		context.lineTo(x, height - bottom + tickLength);
 		context.stroke();
 		context.fillText(
 			formatDateLegend(tick),
 			x,
-			dimensions.height - dimensions.bottom + style.tickLength + 2
+			height - bottom + tickLength + 2
 		);
 	}
 };

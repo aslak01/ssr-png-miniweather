@@ -1,22 +1,25 @@
-import { type CanvasRenderingContext2D } from 'canvas';
+import type { CanvasRenderingContext2D } from 'canvas';
 import { isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData, DataPoint } from '../data';
 import * as d3 from 'd3';
 
 const createScales = (data: DataPoint[], dimensions: Dimensions) => {
+	const { left, width, right, weatherHeight, top, bottom } = dimensions;
+	const height = weatherHeight;
+
 	const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
 	const max = d3.max(data, (d) => d.value) || 0;
 	const min = d3.min(data, (d) => d.value) || 0;
 	const xScale = d3
 		.scaleTime()
 		.domain(extent)
-		.range([dimensions.left, dimensions.width - dimensions.right]);
+		.range([left, width - right]);
 
 	const yScale = d3
 		.scaleLinear()
 		.domain([min - 1, max + 1])
 		.nice()
-		.range([dimensions.height - dimensions.bottom, dimensions.top]);
+		.range([height - bottom, top]);
 
 	return { xScale, yScale };
 };
@@ -28,6 +31,7 @@ export function drawTemps(
 	style: Styles
 ) {
 	const temps = data.map((d) => ({ ...d, value: d.temp }));
+
 	const { xScale, yScale } = createScales(temps, dimensions);
 
 	const lineGenerator = createLineGenerator(xScale, yScale);

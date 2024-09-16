@@ -2,15 +2,14 @@
 	import { onMount } from 'svelte';
 	import { dimensions } from './chart.png/data';
 	import { getTransports } from './chart.png/data/transit';
+	import { page } from '$app/stores';
+	const mock = !!$page.url.searchParams.get('mock');
+	const src = mock ? '/chart.png?mock=true' : '/chart.png';
 	const { height, width } = dimensions;
-	onMount(async () => {
-		const test = await getTransports();
-		console.log(test);
-	});
 </script>
 
 <main>
-	<img src="/chart.png" {height} {width} alt="chart" />
+	<img {src} {height} {width} alt="chart" />
 </main>
 
 <style>

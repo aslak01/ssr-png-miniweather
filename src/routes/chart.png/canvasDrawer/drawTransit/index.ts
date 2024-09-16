@@ -9,30 +9,30 @@ export async function drawTransitInfo(
 ) {
   const { width, height } = dimensions;
 
-  const ownHeight = height * 0.25;
+  const ownHeight = height * 0.2;
 
   ctx.fillStyle = 'black';
   ctx.fillRect(0, height - ownHeight, width, ownHeight);
 
-  // const trainI = await loadImage(import.meta.dirname + '/train.png');
-  // const busI = await loadImage(import.meta.dirname + '/bus.png');
+  const trainI = await loadImage(import.meta.dirname + '/train.png');
+  const busI = await loadImage(import.meta.dirname + '/bus.png');
 
-  const infoHeight = ownHeight * 0.8; // Height of the info area
-  const infoY = height - ownHeight + (ownHeight - infoHeight) / 2; // Y position of info area
-  const itemWidth = 80; // Width for each transit item
+  const infoHeight = ownHeight * 0.8;
+  const infoY = height - ownHeight + (ownHeight - infoHeight) / 2;
+  const itemWidth = 80;
   const iconSize = 30;
   const padding = 10;
 
   let x = padding;
   for (const item of transitData) {
-    // const icon = item.type === 'train' ? trainI : busI;
-    // ctx.drawImage(icon, x, infoY + padding, iconSize, iconSize);
+    const icon = item.type === 'train' ? trainI : busI;
+    ctx.drawImage(icon, x, infoY + padding, iconSize, iconSize);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = 'white';
     ctx.font = '18px';
     ctx.fillText(
-      `${item.name}: ${item.departureMinutes}`,
+      `${item.departureMinutes}`,
       x + itemWidth / 2,
       infoY + padding * 2.5
     );
