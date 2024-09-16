@@ -41,7 +41,7 @@ export type Units = {
 };
 
 export type Timesery = {
-	readonly time: string;
+	readonly time: Date;
 	readonly data: Data;
 };
 
@@ -161,7 +161,7 @@ function transform(
 			const typ = typs[i];
 			try {
 				return transform(val, typ, getProps);
-			} catch (_) {}
+			} catch (_) { }
 		}
 		return invalidValue(typs, val, key, parent);
 	}

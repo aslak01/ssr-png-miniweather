@@ -1,5 +1,5 @@
 import { type CanvasRenderingContext2D } from 'canvas';
-import type { YrTSData, Dimensions, Styles, DataPoint } from '../data';
+import type { YrTSData, Dimensions, Styles, DataPoint } from '../../data';
 import * as d3 from 'd3';
 
 export function drawRain(
@@ -43,13 +43,14 @@ const drawBars = (
 	dimensions: Dimensions,
 	style: Styles
 ) => {
-	const { left, right, bottom, top, width, weatherHeight } = dimensions;
+	const { left, right, bottom, width, weatherHeight } = dimensions;
 	const height = weatherHeight;
 
 	const barWidth =
 		style.barWidth || Math.max(1, (width - left - right) / data.length - 1);
 
 	context.fillStyle = style.barColor;
+
 	data
 		.filter((d) => d.value > 0)
 		.forEach((d) => {

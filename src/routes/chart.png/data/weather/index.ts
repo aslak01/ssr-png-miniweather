@@ -42,8 +42,8 @@ export async function getYrTimeseries(
   const { lat, lon, hrs } = options;
   const response = mock ? mockRawData : await getYrData(lat, lon);
   const trimmedResponse = getNextNHrs(response, hrs);
+  console.log(trimmedResponse[0]);
   const tsData = getTSData(trimmedResponse);
-  console.log(tsData);
   return tsData;
 }
 

@@ -4,9 +4,9 @@ import { createWriteStream } from 'fs';
 import { dev } from '$app/environment';
 
 import type { Dimensions, Styles, YrTSData } from '../data';
-import { drawRain } from './drawRain';
-import { drawTemps } from './drawTemps';
-import { drawTimeTicks } from './drawTime';
+import { drawRain } from './drawWeather/drawRain';
+import { drawTemps } from './drawWeather/drawTemps';
+import { drawTimeTicks } from './drawWeather/drawTime';
 import { drawTransitInfo } from './drawTransit';
 
 import { multiplyNumberValues } from '$lib/utils';
@@ -25,13 +25,13 @@ const createChart = async (
 	const styles = style;
 
 	const canvas = createCanvas(dims.width, dims.height);
-	const context = canvas.getContext('2d');
+	const ctx = canvas.getContext('2d');
 
-	drawTimeTicks(context, weatherData, dims, styles);
-	drawRain(context, weatherData, dims, styles);
-	drawTemps(context, weatherData, dims, styles);
+	drawTimeTicks(ctx, weatherData, dims, styles);
+	drawRain(ctx, weatherData, dims, styles);
+	drawTemps(ctx, weatherData, dims, styles);
 
-	await drawTransitInfo(context, transitData, dims);
+	await drawTransitInfo(ctx, transitData, dims);
 
 	return canvas;
 };

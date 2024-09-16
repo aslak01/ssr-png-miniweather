@@ -1,10 +1,37 @@
 function makeDate(factor: number): Date {
-	return new Date(new Date().getTime() + factor * 60 * 60 * 1000);
+	return new Date(new Date().setMinutes(0, 0, 0) + factor * 60 * 60 * 1000);
 }
 
 export const mockRawData = [
 	{
-		time: new Date(),
+		time: makeDate(-1),
+		data: {
+			instant: {
+				details: {
+					air_pressure_at_sea_level: 992,
+					air_temperature: 15.5,
+					cloud_area_fraction: 100,
+					relative_humidity: 79.2,
+					wind_from_direction: 221.4,
+					wind_speed: 10.2
+				}
+			},
+			next_12_hours: {
+				summary: { symbol_code: 'lightrainshowers_day' },
+				details: {}
+			},
+			next_1_hours: {
+				summary: { symbol_code: 'lightrain' },
+				details: { precipitation_amount: 0.1 }
+			},
+			next_6_hours: {
+				summary: { symbol_code: 'lightrain' },
+				details: { precipitation_amount: 0.5 }
+			}
+		}
+	},
+	{
+		time: makeDate(0),
 		data: {
 			instant: {
 				details: {
@@ -351,195 +378,6 @@ export const mockRawData = [
 			next_6_hours: {
 				summary: { symbol_code: 'partlycloudy_day' },
 				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(13),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.2,
-					air_temperature: 14.1,
-					cloud_area_fraction: 97.1,
-					relative_humidity: 61,
-					wind_from_direction: 231.9,
-					wind_speed: 10.1
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'cloudy' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(14),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.2,
-					air_temperature: 14.6,
-					cloud_area_fraction: 47.7,
-					relative_humidity: 57,
-					wind_from_direction: 212.3,
-					wind_speed: 9
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(15),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994,
-					air_temperature: 14.7,
-					cloud_area_fraction: 52.2,
-					relative_humidity: 55.1,
-					wind_from_direction: 200.6,
-					wind_speed: 10.1
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(16),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.3,
-					air_temperature: 15.1,
-					cloud_area_fraction: 90,
-					relative_humidity: 58.1,
-					wind_from_direction: 208.7,
-					wind_speed: 9.8
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'cloudy' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(17),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.5,
-					air_temperature: 15,
-					cloud_area_fraction: 46.4,
-					relative_humidity: 54,
-					wind_from_direction: 212.6,
-					wind_speed: 9.5
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(18),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.7,
-					air_temperature: 15.4,
-					cloud_area_fraction: 34.4,
-					relative_humidity: 55.4,
-					wind_from_direction: 208.8,
-					wind_speed: 9.9
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'fair_day' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'partlycloudy_day' },
-				details: { precipitation_amount: 0 }
-			}
-		}
-	},
-	{
-		time: makeDate(19),
-		data: {
-			instant: {
-				details: {
-					air_pressure_at_sea_level: 994.5,
-					air_temperature: 15.6,
-					cloud_area_fraction: 35.6,
-					relative_humidity: 55.3,
-					wind_from_direction: 204.7,
-					wind_speed: 9.7
-				}
-			},
-			next_12_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: {}
-			},
-			next_1_hours: {
-				summary: { symbol_code: 'fair_day' },
-				details: { precipitation_amount: 0 }
-			},
-			next_6_hours: {
-				summary: { symbol_code: 'lightrainshowers_day' },
-				details: { precipitation_amount: 0.8 }
 			}
 		}
 	}
