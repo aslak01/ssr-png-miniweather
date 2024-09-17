@@ -2,14 +2,7 @@ import type { CanvasRenderingContext2D } from 'canvas';
 import { formatDateLegend, isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData } from '../../data';
 import * as d3 from 'd3';
-
-function getXScale(data: YrTSData[], dimensions: Dimensions) {
-	const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
-	return d3
-		.scaleTime()
-		.domain(extent)
-		.range([dimensions.left, dimensions.width - dimensions.right]);
-}
+import { getXScale } from './getScales';
 
 export const drawTimeTicks = (
 	context: CanvasRenderingContext2D,
@@ -36,7 +29,7 @@ export const drawTimeTicks = (
 			drawLongTick(tick, dimensions, style);
 			return;
 		}
-		drawNormalTick(tick, dimensions, style);
+		// drawNormalTick(tick, dimensions, style);
 	});
 
 	function drawNormalTick(tick: Date, dimensions: Dimensions, style: Styles) {
@@ -66,10 +59,10 @@ export const drawTimeTicks = (
 		context.moveTo(x, top - bottom);
 		context.lineTo(x, height - bottom + tickLength);
 		context.stroke();
-		context.fillText(
-			formatDateLegend(tick),
-			x,
-			height - bottom + tickLength + 2
-		);
+		// context.fillText(
+		// 	formatDateLegend(tick),
+		// 	x,
+		// 	height - bottom + tickLength + 2
+		// );
 	}
 };

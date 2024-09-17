@@ -1,15 +1,7 @@
 import type { CanvasRenderingContext2D } from 'canvas';
 import { formatDateLegend, isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData } from '../../data';
-import * as d3 from 'd3';
-
-function getXScale(data: YrTSData[], dimensions: Dimensions) {
-  const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
-  return d3
-    .scaleTime()
-    .domain(extent)
-    .range([dimensions.left, dimensions.width - dimensions.right]);
-}
+import { getXScale } from './getScales';
 
 export const drawTimeTicks = (
   context: CanvasRenderingContext2D,

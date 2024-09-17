@@ -1,6 +1,7 @@
 import { type CanvasRenderingContext2D } from 'canvas';
 import type { YrTSData, Dimensions, Styles, DataPoint } from '../../data';
 import * as d3 from 'd3';
+import { getXScale, getYScale } from './getScales';
 
 export function drawRain(
 	context: CanvasRenderingContext2D,
@@ -11,29 +12,6 @@ export function drawRain(
 	const rain = data.map((d) => ({ ...d, value: d.rain }));
 	addBarsToChart(context, rain, dimensions, style);
 }
-
-const createBarScales = (data: DataPoint[], dimensions: Dimensions) => {
-	const { left, right, bottom, top, width, weatherHeight } = dimensions;
-	const height = weatherHeight;
-
-	const extent = d3
-		.extent(data, (d) => d.date)
-		.filter((d): d is Date => d !== undefined);
-
-	const max = d3.max(data, (d) => d.value) || 0;
-
-	const xScale = d3
-		.scaleTime()
-		.domain(extent)
-		.range([left, width - right]);
-
-	const yScale = d3
-		.scaleLinear()
-		.domain([0, max])
-		.range([height - bottom, top]);
-
-	return { xScale, yScale };
-};
 
 const drawBars = (
 	context: CanvasRenderingContext2D,
@@ -66,7 +44,7 @@ const drawAxisTicks = (
 	dimensions: Dimensions,
 	style: Styles
 ) => {
-	const yTicks = yScale.ticks(5);
+	const yTicks = yScale.ticks(3);
 
 	context.beginPath();
 	context.strokeStyle = style.tickColor;
@@ -77,13 +55,14 @@ const drawAxisTicks = (
 	context.textAlign = 'right';
 	context.textBaseline = 'middle';
 	yTicks.forEach((tick) => {
+		if (tick === 0) return;
 		const y = yScale(tick);
-		context.moveTo(dimensions.left - style.tickLength, y);
-		context.lineTo(dimensions.left, y);
+		context.moveTo(dimensions.left - style.tickLength - 23, y);
+		context.lineTo(dimensions.left - 23, y);
 		context.stroke();
 		context.fillText(
 			tick.toString(),
-			dimensions.left - style.tickLength - 2,
+			dimensions.left - style.tickLength - 25,
 			y
 		);
 	});
@@ -96,7 +75,9 @@ const addBarsToChart = (
 	style: Styles
 ) => {
 	if (data.some((d) => d.value > 0)) {
-		const { xScale, yScale } = createBarScales(data, dimensions);
+		const xScale = getXScale(data, dimensions);
+		const yScale = getYScale(data, dimensions, { min: 0, max: 0 });
+
 		drawBars(context, data, xScale, yScale, dimensions, style);
 		drawAxisTicks(context, yScale, dimensions, style);
 	}

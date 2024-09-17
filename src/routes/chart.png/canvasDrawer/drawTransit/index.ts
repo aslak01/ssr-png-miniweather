@@ -19,18 +19,18 @@ export async function drawTransitInfo(
 
   const infoHeight = ownHeight * 0.8;
   const infoY = height - ownHeight + (ownHeight - infoHeight) / 2;
-  const itemWidth = 80;
+  const itemWidth = 90;
   const iconSize = 30;
-  const padding = 10;
+  const padding = 8;
 
   let x = padding;
   for (const item of transitData) {
     const icon = item.type === 'train' ? trainI : busI;
-    ctx.drawImage(icon, x, infoY + padding, iconSize, iconSize);
+    ctx.drawImage(icon, x, infoY + padding - 5, iconSize, iconSize);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = 'white';
-    ctx.font = '18px';
+    ctx.font = 'bold 20px sans-serif';
     ctx.fillText(
       `${item.departureMinutes}`,
       x + itemWidth / 2,

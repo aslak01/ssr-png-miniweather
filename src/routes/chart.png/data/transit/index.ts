@@ -80,7 +80,7 @@ function parseEnturResponse(input: RawEnturData) {
     ...busDepartures
   ].toSorted((a, b) => a.departureTime.getTime() - b.departureTime.getTime());
 
-  return sortedParsedDepartures;
+  return sortedParsedDepartures.slice(0, 5);
 }
 
 type DepartureType = 'bus' | 'train';

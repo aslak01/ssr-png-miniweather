@@ -12,13 +12,13 @@ export const dimensions = {
 export type Dimensions = typeof dimensions;
 
 export const style = {
-	lineColor: '#007bff',
+	lineColor: '#000',
 	axisColor: '#000',
 	labelColor: '#333',
-	lineWidth: 2,
+	lineWidth: 4,
 	axisWidth: 1,
 	labelFont: '12px sans-serif',
-	barColor: '#007bff',
+	barColor: '#666',
 	barWidth: 40,
 	tickColor: '#000',
 	tickWidth: 1,

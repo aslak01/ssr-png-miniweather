@@ -2,27 +2,7 @@ import type { CanvasRenderingContext2D } from 'canvas';
 import { isTruthy } from '$lib/utils';
 import type { Dimensions, Styles, YrTSData, DataPoint } from '../../data';
 import * as d3 from 'd3';
-
-const createScales = (data: DataPoint[], dimensions: Dimensions) => {
-	const { left, width, right, weatherHeight, top, bottom } = dimensions;
-	const height = weatherHeight;
-
-	const extent = d3.extent(data, (d) => d.date).filter(isTruthy);
-	const max = d3.max(data, (d) => d.value) || 0;
-	const min = d3.min(data, (d) => d.value) || 0;
-	const xScale = d3
-		.scaleTime()
-		.domain(extent)
-		.range([left, width - right]);
-
-	const yScale = d3
-		.scaleLinear()
-		.domain([min - 1, max + 1])
-		.nice()
-		.range([height - bottom, top]);
-
-	return { xScale, yScale };
-};
+import { getXScale, getYScale } from './getScales';
 
 export function drawTemps(
 	context: CanvasRenderingContext2D,
@@ -32,7 +12,8 @@ export function drawTemps(
 ) {
 	const temps = data.map((d) => ({ ...d, value: d.temp }));
 
-	const { xScale, yScale } = createScales(temps, dimensions);
+	const xScale = getXScale(temps, dimensions);
+	const yScale = getYScale(temps, dimensions);
 
 	const lineGenerator = createLineGenerator(xScale, yScale);
 
@@ -112,8 +93,8 @@ const drawCircleWithText = (
 	context.stroke();
 
 	context.fillStyle = style.textColor || 'black';
-	context.font = '20pt';
+	context.font = 'bold 20pt sans-serif';
 	context.textAlign = 'center';
 	context.textBaseline = 'middle';
-	context.fillText(text, x, y);
+	context.fillText(text, x, y + 1);
 };
