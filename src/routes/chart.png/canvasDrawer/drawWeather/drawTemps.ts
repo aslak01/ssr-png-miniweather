@@ -1,6 +1,6 @@
 import type { CanvasRenderingContext2D } from 'canvas';
 import { isTruthy } from '$lib/utils';
-import type { Dimensions, Styles, YrTSData, DataPoint } from '../data';
+import type { Dimensions, Styles, YrTSData, DataPoint } from '../../data';
 import * as d3 from 'd3';
 
 const createScales = (data: DataPoint[], dimensions: Dimensions) => {

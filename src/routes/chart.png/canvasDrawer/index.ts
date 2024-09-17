@@ -26,8 +26,10 @@ const createChart = async (
 
 	const canvas = createCanvas(dims.width, dims.height);
 	const ctx = canvas.getContext('2d');
+	ctx.fillStyle = 'white';
+	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-	drawTimeTicks(ctx, weatherData, dims, styles);
+	dev && drawTimeTicks(ctx, weatherData, dims, styles);
 	drawRain(ctx, weatherData, dims, styles);
 	drawTemps(ctx, weatherData, dims, styles);
 
