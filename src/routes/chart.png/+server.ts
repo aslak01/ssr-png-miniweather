@@ -6,7 +6,7 @@ import { getTransports } from './data/transit';
 export const GET: RequestHandler = async ({ url }) => {
 	const mock = !!url.searchParams.get('mock');
 	const weatherData = await getYrTimeseries(mock);
-	const transitData = await getTransports();
+	const transitData = await getTransports(mock);
 
 	if (!weatherData) {
 		throw new Error('no weather data');

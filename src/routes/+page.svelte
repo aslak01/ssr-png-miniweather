@@ -13,11 +13,15 @@
 </main>
 
 <style>
+	:root {
+		color-scheme: light dark;
+	}
 	main {
 		padding: 0;
 		min-height: 100dvh;
 		display: grid;
 		justify-content: center;
 		align-items: center;
+		background-color: light-dark(#eee, #212121);
 	}
 </style>

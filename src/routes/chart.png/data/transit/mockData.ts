@@ -1,4 +1,6 @@
-const mockData = [
+import type { ParsedDeparture } from '.';
+
+export const mockTransportData: ParsedDeparture[] = [
   {
     type: 'train',
     name: 'L1',
@@ -16,7 +18,8 @@ const mockData = [
     type: 'train',
     name: 'L1',
     departureTime: new Date('2024-09-15T19:31:00.000Z'),
-    departureMinutes: 31
+    departureMinutes: 33,
+    delayMinutes: 2
   },
   {
     type: 'bus',
@@ -28,7 +31,8 @@ const mockData = [
     type: 'train',
     name: 'L1',
     departureTime: new Date('2024-09-15T20:01:00.000Z'),
-    departureMinutes: 1
+    departureMinutes: 5,
+    delayMinutes: 4
   },
   {
     type: 'bus',

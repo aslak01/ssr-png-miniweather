@@ -1,5 +1,5 @@
 import { type CanvasRenderingContext2D, loadImage } from 'canvas';
-import type { Dimensions, Styles } from '../../data';
+import type { Dimensions } from '../../data';
 import type { ParsedDeparture } from '../../data/transit';
 
 export async function drawTransitInfo(
@@ -19,24 +19,33 @@ export async function drawTransitInfo(
 
   const infoHeight = ownHeight * 0.8;
   const infoY = height - ownHeight + (ownHeight - infoHeight) / 2;
-  const itemWidth = 90;
   const iconSize = 30;
   const padding = 8;
+  const verticalPadding = padding * 2.3;
 
   let x = padding;
   for (const item of transitData) {
     const icon = item.type === 'train' ? trainI : busI;
     ctx.drawImage(icon, x, infoY + padding - 5, iconSize, iconSize);
 
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'white';
     ctx.font = 'bold 20px sans-serif';
-    ctx.fillText(
-      `${item.departureMinutes}`,
-      x + itemWidth / 2,
-      infoY + padding * 2.5
-    );
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'white';
 
-    x += itemWidth;
+    x += iconSize + padding / 2;
+
+    const departureText = `${item.departureMinutes}`;
+    const departureWidth = ctx.measureText(departureText).width;
+    ctx.fillText(departureText, x, infoY + verticalPadding);
+
+    x += departureWidth + padding / 2;
+    if (item.delayMinutes) {
+      const delayText = `(+${item.delayMinutes})`;
+      const delayWidth = ctx.measureText(delayText).width;
+      ctx.fillText(delayText, x, infoY + verticalPadding);
+      x += delayWidth;
+    }
+
+    x += padding;
   }
 }

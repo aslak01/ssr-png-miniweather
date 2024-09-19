@@ -57,10 +57,19 @@ function validateEnturResponse(data: string): RawEnturData {
   }
 }
 
-export async function getTransports(): Promise<ParsedDeparture[] | undefined> {
+import { mockTransportData } from './mockData';
+
+export async function getTransports(mock = false): Promise<ParsedDeparture[]> {
+  if (mock) return mockTransportData.slice(0, 5);
   const rawData = await fetchEnturGql(enturQuery);
+  if (!rawData) {
+    throw new Error('could not fetch Entur data.');
+  }
   const validatedData = validateEnturResponse(rawData);
   const parsedData = parseEnturResponse(validatedData);
+  if (!parsedData) {
+    throw new Error('Could not parse Entur data.');
+  }
   return parsedData;
 }
 
